@@ -8,8 +8,8 @@
 <body>
     <h1>Restaurant Details</h1>
     <p>Name: {{ $restaurant->name }}</p>
-    <p>Email: {{ $restaurant->email }}</p>
     <p>Address: {{ $restaurant->address }}</p>
+    <p>Contact: {{ $restaurant->contact }}</p>
     <!-- Add more details here as needed -->
 </body>
 </html>

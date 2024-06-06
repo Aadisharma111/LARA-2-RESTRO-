@@ -13,9 +13,10 @@ return new class extends Migration
         Schema::create('restaurants', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->nullable(); // Remove the unique constraint
+            $table->string('email')->nullable(); // Make the email field nullable
             $table->string('password')->nullable(); // Make the password field nullable
-            // Add more fields as needed
+            $table->text('address'); // Ensure this field is present
+            $table->string('contact')->nullable(); // Add the contact field, making it nullable
             $table->timestamps();
         });
     }

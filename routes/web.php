@@ -1,5 +1,6 @@
 <?php
 use App\Http\Controllers\RestaurantController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\RegisterController;  
@@ -14,6 +15,10 @@ Route::post('/restaurants', [RestaurantController::class, 'store'])->name('resta
 Route::get('/restaurants/{restaurant}/edit', [RestaurantController::class, 'edit'])->name('restaurants.edit');
 Route::get('/restaurants/{restaurant}', [RestaurantController::class, 'show'])->name('restaurants.show');
 Route::delete('/restaurants/{restaurant}', [RestaurantController::class, 'destroy'])->name('restaurants.destroy');
+Route::put('/restaurants/{restaurant}', [RestaurantController::class, 'update'])->name('restaurants.update');
+Route::resource('orders', OrderController::class);
+Route::get('/orders/food-items/{restaurantId}', [OrderController::class, 'getFoodItems']);
+Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
 // Dashboard Route protected by authentication middleware
 Route::middleware('auth:web')->group(function () {
     Route::get('/dashboard', function () {

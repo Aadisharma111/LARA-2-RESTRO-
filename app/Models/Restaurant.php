@@ -3,17 +3,14 @@
 
 namespace App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
-class Restaurant extends Authenticatable
+class Restaurant extends Model
 {
     use Notifiable;
 
-    protected $fillable = [
-        'name', 'email', 'password',
-    ];
+    protected $fillable = ['name','contact','address' ];  // Ensure all necessary fields are included
 
     protected $hidden = [
         'password', 'remember_token',
