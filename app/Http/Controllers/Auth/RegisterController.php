@@ -2,36 +2,56 @@
 namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 class RegisterController extends Controller
 {
-    // Show the registration form
+    protected $redirectTo = '/restaurants';
+
+    public function __construct()
+    {
+        $this->middleware('guest');
+    }
     public function showRegistrationForm()
     {
         return view('auth.register');
     }
-
-    // Handle registration form submission
     public function register(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+        $this->validator($request->all())->validate();
+
+        try {
+            $user = $this->create($request->all());
+            event(new Registered($user));
+            Auth::login($user);
+            return redirect($this->redirectTo);
+        } catch (\Exception $e) {
+            Log::error('Registration failed: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Registration failed.');
+        }
+    }
+    protected function validator(array $data)
+    {
+        return Validator::make($data, [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
-
-        // Create and save the new user
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+    }
+    protected function create(array $data)
+    {
+        return User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
         ]);
-
-        // Optionally, you can authenticate the user after registration
-        // Auth::login($user);
-
-        return redirect('/login')->with('success', 'Registration successful! Please log in.');
+    }
+    protected function redirectTo()
+    {
+        return $this->redirectTo;
     }
 }
