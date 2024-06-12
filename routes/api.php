@@ -2,7 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\OrderController;
+Route::get('/orders/food-items/{restaurantId}', [OrderController::class, 'fetchFoodItems'])->name('orders.food-items');
 /*
 |--------------------------------------------------------------------------
 | API Routes

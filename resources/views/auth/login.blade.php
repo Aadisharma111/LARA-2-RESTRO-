@@ -7,20 +7,25 @@
         @csrf
         <div class="form-group">
             <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
+            <input type="email" id="email" name="email" value="{{ old('email') }}" required>
+            @if ($errors->has('email'))
+                <span class="error">{{ $errors->first('email') }}</span>
+            @endif
         </div>
         <div class="form-group">
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
+            @if ($errors->has('password'))
+                <span class="error">{{ $errors->first('password') }}</span>
+            @endif
         </div>
         <button type="submit" class="btn">Login</button>
     </form>
-    <div class="register-link">
+       <div class="register-link">
         <p>Don't have an account? <a href="{{ route('register') }}">Register here</a></p>
-    </div>
-</div>
-@endsection
-
+      </div>
+      </div>
+      @endsection
 <style>
     body {
         font-family: Arial, sans-serif;
@@ -35,7 +40,6 @@
         background-size: cover; /* Cover the entire viewport */
         background-position: center; /* Center the background image */
     }
-
     .login-container {
         background-color: rgba(255, 255, 255, 0.9); /* Add a slight transparency */
         border-radius: 10px; /* Rounded corners */
@@ -44,23 +48,19 @@
         width: 100%;
         max-width: 400px; /* Maximum width for the container */
     }
-
     .login-container h2 {
         text-align: center;
         margin-bottom: 30px;
         color: #333;
     }
-
     .form-group {
         margin-bottom: 20px;
     }
-
     .form-group label {
         display: block;
         font-weight: bold;
         margin-bottom: 5px;
     }
-
     .form-group input[type="email"],
     .form-group input[type="password"] {
         width: 100%;
@@ -70,7 +70,6 @@
         border-radius: 5px;
         box-sizing: border-box;
     }
-
     .btn {
         width: 100%;
         padding: 12px;
@@ -82,22 +81,23 @@
         cursor: pointer;
         transition: background-color 0.3s;
     }
-
     .btn:hover {
         background-color: #0056b3;
     }
-
     .register-link {
         text-align: center;
         margin-top: 20px;
     }
-
     .register-link a {
         color: #007bff;
         text-decoration: none;
     }
-
     .register-link a:hover {
         text-decoration: underline;
+    }
+     .error {
+        color: red;
+        font-size: 14px;
+        margin-top: 5px;
     }
 </style>

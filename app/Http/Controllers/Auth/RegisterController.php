@@ -10,30 +10,13 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 class RegisterController extends Controller
 {
-    protected $redirectTo = '/restaurants';
+    protected $redirectTo = 'restaurants.index';
 
     public function __construct()
     {
         $this->middleware('guest');
     }
-    public function showRegistrationForm()
-    {
-        return view('auth.register');
-    }
-    public function register(Request $request)
-    {
-        $this->validator($request->all())->validate();
 
-        try {
-            $user = $this->create($request->all());
-            event(new Registered($user));
-            Auth::login($user);
-            return redirect($this->redirectTo);
-        } catch (\Exception $e) {
-            Log::error('Registration failed: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Registration failed.');
-        }
-    }
     protected function validator(array $data)
     {
         return Validator::make($data, [
@@ -50,8 +33,31 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
         ]);
     }
-    protected function redirectTo()
+    public function register(Request $request)
     {
-        return $this->redirectTo;
+        $validator = $this->validator($request->all());
+
+        if ($validator->fails()) {
+            // Redirect back with validation errors
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+        // Create the user
+        $user = $this->create($request->all());
+
+        // Log user registration
+        Log::info('User registered: ' . $user->email);
+
+        // Log the user in
+        Auth::login($user);
+
+        // Redirect to the desired path
+        return route('restaurants.index');
+    }
+    public function showRegistrationForm()
+    {
+        return view('auth.register');
     }
 }
+

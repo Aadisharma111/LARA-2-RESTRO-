@@ -4,10 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Restaurants</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}"> <!-- Include CSRF token meta tag -->
 </head>
 <body>
-    <h1>Restaurants</h1>
-    <a href="{{ route('restaurants.create') }}">Create New Restaurant</a>
+   <h1>Restaurants</h1>
+   <a href="{{ route('restaurants.create') }}" style="margin-right: 40px;">Create New Restaurant</a>
+    <a href="{{ route('orders.index') }}">Create Orders</a>
+   
     <table>
         <thead>
             <tr>
@@ -36,6 +40,25 @@
             @endforeach
         </tbody>
     </table>
+    <a href="#" id="logout">Logout</a> <!-- Move logout link inside body -->
+       <script>
+          $(document).ready(function(){
+            $('#logout').click(function(e){
+                e.preventDefault();
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ route("logout") }}',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response){
+                        window.location.href = '{{ route("login") }}';
+                    }
+                });
+            });
+        });
+          </script>
+       
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -49,23 +72,27 @@
             color: #007bff;
             animation: fadeIn 1s ease-in-out;
         }
-        a {
+        a, button {
             display: inline-block;
-            margin-bottom: 20px;
             padding: 10px 20px;
             background-color: #28a745;
             color: #fff;
             text-decoration: none;
             border-radius: 5px;
             transition: background-color 0.3s, transform 0.3s;
+            margin-right: 20px; /* Add spacing between buttons */
         }
-        a:hover {
+        a:last-child, button:last-child {
+            margin-right: 0; /* Remove margin from the last button */
+        }
+        a:hover, button:hover {
             background-color: #218838;
             transform: scale(1.05);
         }
-         table {
+        table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 20px; /* Add spacing between buttons and table */
             margin-bottom: 20px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             animation: slideInUp 1s ease-in-out;
@@ -96,7 +123,7 @@
             display: inline;
         }
         button {
-            padding: 11px 19px;
+            padding: 10px 20px;
             background-color: #dc3545;
             color: #fff;
             border: none;
@@ -109,6 +136,21 @@
             background-color: #c82333;
             transform: scale(1.05);
         }
+        body {
+            position: relative; /* Set body to relative position */
+        }
+        #logout {
+            position: absolute; /* Position the logout button */
+            top: 20px; /* Distance from the top */
+            right: 20px; /* Distance from the right */
+            padding: 5px 10px; /* Adjust padding */
+            background-color: black; /* Change background color */
+            color: yellow; /* Change text color */
+            border: none; /* Remove border */
+            border-radius: 5px; /* Apply border radius */
+            text-decoration: none; /* Remove underline */
+            transition: background-color 0.3s, transform 0.3s; /* Apply transition */
+        } 
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }

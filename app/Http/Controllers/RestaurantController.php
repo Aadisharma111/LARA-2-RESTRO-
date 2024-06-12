@@ -1,8 +1,7 @@
 <?php
 namespace App\Http\Controllers;
-use App\Models\Restaurant;
 use Illuminate\Http\Request;
-
+use App\Models\Restaurant;
 class RestaurantController extends Controller
 {
     public function index()
@@ -18,30 +17,21 @@ class RestaurantController extends Controller
 
     public function store(Request $request)
     {
-        // Validate only the 'name' and 'address' fields
         $request->validate([
             'name' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
             'contact' => 'nullable|string|max:255',
         ]);
-    
-             // Create a new restaurant with the validated data
-        Restaurant::create([
-            'name'    => $request->name,
-            'address' => $request->address,
-            'contact' => $request->contact,
-        ]);
-       
-            // Redirect to a desired route with a success message
-        return redirect()->route('restaurants.index')
-                         ->with('success', 'Restaurant created successfully.');
+
+        Restaurant::create($request->all());
+
+        return redirect()->route('restaurants.index')->with('success', 'Restaurant created successfully.');
     }
 
-        public function show(Restaurant $restaurant)
-         {
-           return view('restaurants.show', compact('restaurant'));
-        }
- 
+    public function show(Restaurant $restaurant)
+    {
+        return view('restaurants.show', compact('restaurant'));
+    }
+
     public function edit(Restaurant $restaurant)
     {
         return view('restaurants.edit', compact('restaurant'));
@@ -49,20 +39,20 @@ class RestaurantController extends Controller
 
     public function update(Request $request, Restaurant $restaurant)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255|unique:restaurants,name,' . $restaurant->id,
-            'address' => 'required|string|max:255',
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'location' => 'required|string|max:255',
         ]);
- 
-        $restaurant->update($validatedData);
 
-        return redirect()->route('restaurants.index')->with('success', 'Restaurant updated successfully!');
+        $restaurant->update($request->all());
+
+        return redirect()->route('restaurants.index')->with('success', 'Restaurant updated successfully.');
     }
 
     public function destroy(Restaurant $restaurant)
     {
         $restaurant->delete();
 
-        return redirect()->route('restaurants.index')->with('success', 'Restaurant deleted successfully!');
-    }    
+        return redirect()->route('restaurants.index')->with('success', 'Restaurant deleted successfully.');
+    }
 }
